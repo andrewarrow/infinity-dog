@@ -19,11 +19,12 @@ type AttributeHolder struct {
 }
 
 type Attribute struct {
-	Service       string         `json:""service"`
-	Status        string         `json:"status"`
-	Timestamp     time.Time      `json:"timestamp"`
-	Host          string         `json:"host"`
-	SubAttributes []SubAttribute `json:"attributes"`
+	Service       string       `json:""service"`
+	Tags          []string     `json:"tags"`
+	Status        string       `json:"status"`
+	Timestamp     time.Time    `json:"timestamp"`
+	Host          string       `json:"host"`
+	SubAttributes SubAttribute `json:"attributes"`
 }
 
 type SubAttribute struct {
