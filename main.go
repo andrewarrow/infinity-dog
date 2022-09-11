@@ -17,7 +17,8 @@ func main() {
 	command := os.Args[1]
 
 	if command == "logs" {
-		dog.Logs()
+		query := os.Args[2]
+		dog.Logs(query)
 	} else if command == "key" {
 		dog.CheckKey()
 	} else if command == "help" {

@@ -5,10 +5,10 @@ import (
 	"infinity-dog/network"
 )
 
-func Logs() {
+func Logs(query string) {
 	payload := `{
   "filter": {
-    "query": "datadog-agent",
+    "query": "%s",
     "indexes": [
       "main"
     ],
@@ -20,6 +20,7 @@ func Logs() {
     "limit": 5
   }
 }`
-	jsonString := network.DoPost("/api/v2/logs/events/search", []byte(payload))
+	payloadString := fmt.Sprintf(payload, query)
+	jsonString := network.DoPost("/api/v2/logs/events/search", []byte(payloadString))
 	fmt.Println(jsonString)
 }
