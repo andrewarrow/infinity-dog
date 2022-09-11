@@ -1,5 +1,7 @@
 package dog
 
+import "time"
+
 type LogResponse struct {
 	Data []AttributeHolder `json:"data"`
 }
@@ -11,7 +13,7 @@ type AttributeHolder struct {
 type Attribute struct {
 	Service       string         `json:""service"`
 	Status        string         `json:"status"`
-	Timestamp     string         `json:"timestamp"`
+	Timestamp     time.Time      `json:"timestamp"`
 	Host          string         `json:"host"`
 	SubAttributes []SubAttribute `json:"attributes"`
 }

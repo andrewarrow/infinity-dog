@@ -43,7 +43,10 @@ func Logs(query string) {
 	var logResponse LogResponse
 	json.Unmarshal([]byte(jsonString), &logResponse)
 
+	now := time.Now().Unix()
 	for _, d := range logResponse.Data {
-		fmt.Println(d.Attributes.Timestamp, d.Attributes.Service)
+		delta := now - d.Attributes.Timestamp.Unix()
+		tsFloat := float64(delta) / 60.0
+		fmt.Printf("%.2f %s\n", tsFloat, d.Attributes.Service)
 	}
 }
