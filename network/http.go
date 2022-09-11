@@ -19,8 +19,10 @@ func DoGet(route string) string {
 	urlString := fmt.Sprintf("%s%s", BaseUrl(), route)
 	request, _ := http.NewRequest("GET", urlString, nil)
 	request.Header.Set("User-Agent", agent)
+	fmt.Println(os.Getenv("DOG_KEY"))
 	request.Header.Set("DD-API-KEY", os.Getenv("DOG_KEY"))
 	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Accept", "application/json")
 	client := &http.Client{Timeout: time.Second * 5}
 	return DoHttpRead("GET", route, client, request)
 }
@@ -53,7 +55,10 @@ func DoPost(route string, payload []byte) string {
 	body := bytes.NewBuffer(payload)
 	urlString := fmt.Sprintf("%s%s", BaseUrl(), route)
 	request, _ := http.NewRequest("POST", urlString, body)
+	request.Header.Set("DD-API-KEY", os.Getenv("DOG_KEY"))
+	request.Header.Set("DD-APPLICATION-KEY", os.Getenv("DOG_APP"))
 	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Accept", "application/json")
 	client := &http.Client{Timeout: time.Second * 50}
 
 	return DoHttpRead("POST", route, client, request)

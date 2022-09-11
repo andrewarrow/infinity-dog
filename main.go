@@ -18,6 +18,8 @@ func main() {
 
 	if command == "logs" {
 		dog.Logs()
+	} else if command == "key" {
+		dog.CheckKey()
 	} else if command == "help" {
 		PrintHelp()
 	}
