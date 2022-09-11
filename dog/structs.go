@@ -25,8 +25,10 @@ type Attribute struct {
 	Timestamp     time.Time    `json:"timestamp"`
 	Host          string       `json:"host"`
 	SubAttributes SubAttribute `json:"attributes"`
+	Message       string       `json"message"`
 }
 
 type SubAttribute struct {
-	Msg string `json:"msg"`
+	Msg       string `json:"msg"`
+	Exception string `json:"exception"`
 }

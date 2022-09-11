@@ -39,7 +39,9 @@ func Logs(query string) {
 			delta := now - d.Attributes.Timestamp.Unix()
 			tsFloat := float64(delta) / 60.0
 			fmt.Printf("%.2f %s\n", tsFloat, d.Attributes.Service)
+			fmt.Printf("%s\n", d.Attributes.Message)
 			fmt.Printf("%s\n", d.Attributes.SubAttributes.Msg)
+			fmt.Printf("%s\n", d.Attributes.SubAttributes.Exception)
 		}
 
 		cursor = logResponse.Meta.Page.After
