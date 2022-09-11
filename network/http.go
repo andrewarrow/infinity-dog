@@ -19,7 +19,6 @@ func DoGet(route string) string {
 	urlString := fmt.Sprintf("%s%s", BaseUrl(), route)
 	request, _ := http.NewRequest("GET", urlString, nil)
 	request.Header.Set("User-Agent", agent)
-	fmt.Println(os.Getenv("DOG_KEY"))
 	request.Header.Set("DD-API-KEY", os.Getenv("DOG_KEY"))
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Accept", "application/json")
