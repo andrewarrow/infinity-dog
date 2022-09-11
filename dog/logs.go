@@ -22,6 +22,30 @@ func Logs(query string) {
 	utcString = fmt.Sprintf("%v", utcNow.Add(time.Second))
 	to := golangTimeToDogTime(utcString)
 
+	cursor := ""
+	for {
+		payloadString := makePayload(query, from, to, cursor)
+		jsonString := network.DoPost("/api/v2/logs/events/search", []byte(payloadString))
+
+		var logResponse LogResponse
+		json.Unmarshal([]byte(jsonString), &logResponse)
+
+		now := time.Now().Unix()
+		for _, d := range logResponse.Data {
+			delta := now - d.Attributes.Timestamp.Unix()
+			tsFloat := float64(delta) / 60.0
+			fmt.Printf("%.2f %s\n", tsFloat, d.Attributes.Service)
+		}
+
+		cursor = logResponse.Meta.Page.After
+
+		if cursor == "" {
+			break
+		}
+	}
+}
+
+func makePayload(query, from, to, cursor string) string {
 	payload := `{
   "filter": {
     "query": "%s",
@@ -33,20 +57,13 @@ func Logs(query string) {
   },
   "sort": "timestamp",
   "page": {
-	  "cursor": null,
+	  "cursor": %s,
     "limit": 500
   }
 }`
-	payloadString := fmt.Sprintf(payload, query, from, to)
-	jsonString := network.DoPost("/api/v2/logs/events/search", []byte(payloadString))
-
-	var logResponse LogResponse
-	json.Unmarshal([]byte(jsonString), &logResponse)
-
-	now := time.Now().Unix()
-	for _, d := range logResponse.Data {
-		delta := now - d.Attributes.Timestamp.Unix()
-		tsFloat := float64(delta) / 60.0
-		fmt.Printf("%.2f %s\n", tsFloat, d.Attributes.Service)
+	cursorString := "null"
+	if cursor != "" {
+		cursorString = fmt.Sprintf(`"%s"`, cursor)
 	}
+	return fmt.Sprintf(payload, query, from, to, cursorString)
 }

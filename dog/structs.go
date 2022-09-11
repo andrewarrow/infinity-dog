@@ -4,6 +4,14 @@ import "time"
 
 type LogResponse struct {
 	Data []AttributeHolder `json:"data"`
+	Meta MetaHolder        `json:"meta"`
+}
+
+type MetaHolder struct {
+	Page PageHolder `json:"page"`
+}
+type PageHolder struct {
+	After string `json:"after"`
 }
 
 type AttributeHolder struct {
