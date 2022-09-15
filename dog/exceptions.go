@@ -42,10 +42,10 @@ func Exceptions(service string) {
 
 	exceptionList := []Exception{}
 	for k, v := range exceptionMap {
-		s := Exception{}
-		s.Name = k
-		s.Hits = v
-		exceptionList = append(exceptionList, s)
+		e := Exception{}
+		e.Name = k
+		e.Hits = v
+		exceptionList = append(exceptionList, e)
 	}
 	sort.SliceStable(exceptionList, func(i, j int) bool {
 		return exceptionList[i].Hits > exceptionList[j].Hits
