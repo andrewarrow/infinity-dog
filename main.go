@@ -26,6 +26,9 @@ func main() {
 	} else if command == "sample" {
 		hours := os.Args[2]
 		dog.Sample(hours)
+	} else if command == "exceptions" {
+		service := util.GetArg(2)
+		dog.Exceptions(service)
 	} else if command == "services" {
 		sort := util.GetArg(2)
 		level := util.GetArg(3)
