@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"infinity-dog/files"
 	"infinity-dog/network"
-	"strings"
 	"time"
 )
 
@@ -25,29 +24,30 @@ func Logs(hours int, query string) {
 	to := golangTimeToDogTime(utcString)
 
 	cursor := ""
-	buff := []string{}
 	startTime := time.Now().Unix()
 	hits := 0
+	i := 1
 	for {
 		fmt.Println(from, to, cursor)
 		payloadString := makePayload(query, from, to, cursor)
 		// 300 requests per hour (aka 5 per minute)
 		jsonString := network.DoPost("/api/v2/logs/events/search", []byte(payloadString))
 		hits++
-		if hits == 5 {
+		if hits == 300 {
 			for {
 				delta := time.Now().Unix() - startTime
-				if delta > 60 {
+				if delta > 3600 {
 					break
 				}
-				fmt.Println("at 5", delta)
+				fmt.Println("at 300", delta)
 				time.Sleep(time.Second * 1)
 			}
 			startTime = time.Now().Unix()
 			hits = 0
 		}
 
-		buff = append(buff, jsonString)
+		files.SaveFile(fmt.Sprintf("samples/%06d.json", i), jsonString)
+		i++
 
 		var logResponse LogResponse
 		json.Unmarshal([]byte(jsonString), &logResponse)
@@ -69,7 +69,6 @@ func Logs(hours int, query string) {
 			break
 		}
 	}
-	files.SaveFile("t.json", strings.Join(buff, "\n"))
 }
 
 func makePayload(query, from, to, cursor string) string {

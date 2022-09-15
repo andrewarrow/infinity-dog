@@ -15,6 +15,7 @@ func main() {
 		return
 	}
 	command := os.Args[1]
+	os.Mkdir("samples", 0755)
 
 	if command == "logs" {
 		query := os.Args[2]
