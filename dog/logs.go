@@ -26,10 +26,27 @@ func Logs(hours int, query string) {
 
 	cursor := ""
 	buff := []string{}
+	startTime := time.Now().Unix()
+	hits := 0
 	for {
 		fmt.Println(from, to, cursor)
 		payloadString := makePayload(query, from, to, cursor)
+		// 300 requests per hour (aka 5 per minute)
 		jsonString := network.DoPost("/api/v2/logs/events/search", []byte(payloadString))
+		hits++
+		if hits == 5 {
+			for {
+				delta := time.Now().Unix() - startTime
+				if delta > 60 {
+					break
+				}
+				fmt.Println("at 5", delta)
+				time.Sleep(time.Second * 1)
+			}
+			startTime = time.Now().Unix()
+			hits = 0
+		}
+
 		buff = append(buff, jsonString)
 
 		var logResponse LogResponse
