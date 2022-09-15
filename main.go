@@ -2,6 +2,7 @@ package main
 
 import (
 	"infinity-dog/dog"
+	"infinity-dog/util"
 	"math/rand"
 	"os"
 	"time"
@@ -26,7 +27,9 @@ func main() {
 		hours := os.Args[2]
 		dog.Sample(hours)
 	} else if command == "services" {
-		dog.Services()
+		sort := util.GetArg(2)
+		level := util.GetArg(3)
+		dog.Services(sort, level)
 	} else if command == "help" {
 		PrintHelp()
 	}
