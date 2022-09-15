@@ -25,6 +25,8 @@ func main() {
 	} else if command == "sample" {
 		hours := os.Args[2]
 		dog.Sample(hours)
+	} else if command == "services" {
+		dog.Services()
 	} else if command == "help" {
 		PrintHelp()
 	}
