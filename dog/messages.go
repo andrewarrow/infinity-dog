@@ -35,6 +35,9 @@ func Messages(service string) {
 			if len(bothMessages) == 0 {
 				continue
 			}
+			if len(bothMessages) > 162 {
+				bothMessages = bothMessages[:162]
+			}
 			tokens := strings.Split(bothMessages, "\n")
 			messagesMap[tokens[0]]++
 		}
