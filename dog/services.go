@@ -29,6 +29,7 @@ func Services(sortString, level string) {
 
 	servicesHitMap := map[string]int{}
 	servicesDataMap := map[string]int{}
+	servicesExceptionMap := map[string]int{}
 
 	for _, file := range sampleFiles {
 		jsonString := files.ReadFile("samples/" + file.Name())
@@ -40,6 +41,9 @@ func Services(sortString, level string) {
 				len(d.Attributes.SubAttributes.Msg) +
 				len(d.Attributes.SubAttributes.Exception)
 			servicesDataMap[d.Attributes.Service] += dataLength
+			if len(d.Attributes.SubAttributes.Exception) > 0 {
+				servicesExceptionMap[d.Attributes.Service]++
+			}
 		}
 	}
 
@@ -50,17 +54,41 @@ func Services(sortString, level string) {
 		s.Name = k
 		s.Hits = v
 		s.Data = servicesDataMap[k]
+		s.Exceptions = servicesExceptionMap[k]
 		servicesList = append(servicesList, s)
 	}
 
-	sort.SliceStable(servicesList, func(i, j int) bool {
-		//return services[i].Hits > services[j].Hits
-		return servicesList[i].Data > servicesList[j].Data
-	})
+	theSort := "hits"
+	if sortString != "" {
+		theSort = sortString
+	}
 
-	for i, service := range servicesList {
-		//fmt.Printf("%03d. %-60s %d\n", i+1, service.Name, service.Hits)
-		fmt.Printf("%03d. %-60s %d\n", i+1, service.Name, service.Data)
+	if theSort == "hits" {
+		sort.SliceStable(servicesList, func(i, j int) bool {
+			return servicesList[i].Hits > servicesList[j].Hits
+		})
+	} else if theSort == "data" {
+		sort.SliceStable(servicesList, func(i, j int) bool {
+			return servicesList[i].Data > servicesList[j].Data
+		})
+	} else if theSort == "exceptions" {
+		sort.SliceStable(servicesList, func(i, j int) bool {
+			return servicesList[i].Exceptions > servicesList[j].Exceptions
+		})
+	}
+
+	if theSort == "hits" {
+		for i, service := range servicesList {
+			fmt.Printf("%03d. %-60s %d\n", i+1, service.Name, service.Hits)
+		}
+	} else if theSort == "data" {
+		for i, service := range servicesList {
+			fmt.Printf("%03d. %-60s %d\n", i+1, service.Name, service.Data)
+		}
+	} else if theSort == "exceptions" {
+		for i, service := range servicesList {
+			fmt.Printf("%03d. %-60s %d\n", i+1, service.Name, service.Exceptions)
+		}
 	}
 
 }
