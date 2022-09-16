@@ -6,6 +6,7 @@ import (
 	"infinity-dog/database"
 	"infinity-dog/files"
 	"io/ioutil"
+	"os"
 )
 
 func Import() {
@@ -15,7 +16,7 @@ func Import() {
 		return
 	}
 
-	os.RemoveFile("sqlite.db")
+	os.Remove("sqlite.db")
 	database.CreateSchema()
 	db := database.OpenTheDB()
 	defer db.Close()
@@ -25,7 +26,7 @@ func Import() {
 		var logResponse LogResponse
 		json.Unmarshal([]byte(jsonString), &logResponse)
 
-		tx, _ = db.Begin()
+		tx, _ := db.Begin()
 		s := `insert into services (name,msg,message,exception,logged_at) values (?,?,?,?,?)`
 		prep, _ := tx.Prepare(s)
 
