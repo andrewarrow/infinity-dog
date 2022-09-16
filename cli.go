@@ -9,5 +9,6 @@ func PrintHelp() {
 	fmt.Println("  infinity-dog services   [hits|exceptions|data] [info|warn|debug]")
 	fmt.Println("  infinity-dog exceptions [service]")
 	fmt.Println("  infinity-dog messages   [service]")
+	fmt.Println("  infinity-dog import")
 	fmt.Println("")
 }
