@@ -32,9 +32,9 @@ func MessagesFromService(service string) []Message {
 	return items
 }
 
-func (m *Message) BothTruncated() string {
-	if len(m.Both) > 90 {
-		return m.Both[0:90]
+func (m *Message) BothTruncated(offset int) string {
+	if len(m.Both) > offset+90 {
+		return m.Both[offset : offset+90]
 	}
 	return m.Both
 }

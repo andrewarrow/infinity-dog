@@ -14,6 +14,7 @@ var utc, _ = time.LoadLocation("UTC")
 var services = widgets.NewList()
 var messages = widgets.NewList()
 var serviceItems = []database.Service{}
+var offset = 0
 
 func Setup() {
 	if err := ui.Init(); err != nil {
@@ -34,13 +35,20 @@ func Setup() {
 	messages.TextStyle.Fg = ui.ColorWhite
 	messages.TextStyle.Bg = ui.ColorBlack
 
+	p2 := widgets.NewParagraph()
+	p2.Text = "[There](fg:blue,mod:bold) are [1,345,192](fg:red) rows in sqlite. [From](fg:green) 12 days ago to 3 hours ago."
+	//p2.SetRect(0, 5, 35, 10)
+	p2.BorderStyle.Fg = ui.ColorYellow
+
 	grid := ui.NewGrid()
 	termWidth, termHeight := ui.TerminalDimensions()
 	grid.SetRect(0, 0, termWidth, termHeight)
 
 	grid.Set(
 		ui.NewRow(1.0,
-			ui.NewCol(1.0/3, services),
+			ui.NewCol(1.0/3,
+				ui.NewRow(0.8, services),
+				ui.NewRow(0.2, p2)),
 			ui.NewCol((1.0/3)*2, messages),
 		),
 	)
@@ -57,7 +65,14 @@ func Setup() {
 				services.ScrollDown()
 			case "k", "<Up>":
 				services.ScrollUp()
+			case "<Left>":
+				offset--
+				handleEnter()
+			case "<Right>":
+				offset++
+				handleEnter()
 			case "<Enter>":
+				offset = 0
 				handleEnter()
 			case "<Resize>":
 				payload := e.Payload.(ui.Resize)
@@ -76,6 +91,6 @@ func handleEnter() {
 	utcNow := time.Now().In(utc).Unix()
 	for _, item := range items {
 		delta := float64(utcNow-item.LoggedAt) / 3600.0
-		messages.Rows = append(messages.Rows, fmt.Sprintf("%.2f %s", delta, item.BothTruncated()))
+		messages.Rows = append(messages.Rows, fmt.Sprintf("%.2f %s", delta, item.BothTruncated(offset)))
 	}
 }
