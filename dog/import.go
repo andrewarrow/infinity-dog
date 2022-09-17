@@ -6,7 +6,6 @@ import (
 	"infinity-dog/database"
 	"infinity-dog/files"
 	"io/ioutil"
-	"os"
 )
 
 func Import() {
@@ -16,8 +15,8 @@ func Import() {
 		return
 	}
 
-	os.Remove("sqlite.db")
-	database.CreateSchema()
+	//os.Remove("sqlite.db")
+	//database.CreateSchema()
 	db := database.OpenTheDB()
 	defer db.Close()
 

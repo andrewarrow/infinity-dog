@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"infinity-dog/files"
 	"infinity-dog/network"
+	"infinity-dog/util"
 	"time"
 )
 
@@ -26,7 +27,6 @@ func Logs(hours int, query string) {
 	cursor := ""
 	startTime := time.Now().Unix()
 	hits := 0
-	i := 1
 	for {
 		fmt.Println(from, to, cursor)
 		payloadString := makePayload(query, from, to, cursor)
@@ -46,8 +46,7 @@ func Logs(hours int, query string) {
 			hits = 0
 		}
 
-		files.SaveFile(fmt.Sprintf("samples/%06d.json", i), jsonString)
-		i++
+		files.SaveFile(fmt.Sprintf("samples/%s.json", util.PseudoUuid()), jsonString)
 
 		var logResponse LogResponse
 		json.Unmarshal([]byte(jsonString), &logResponse)
