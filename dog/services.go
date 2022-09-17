@@ -26,13 +26,13 @@ func ServicesFromSql(sortString string) {
 	db := database.OpenTheDB()
 	defer db.Close()
 
-	fmt.Println(s)
 	rows, err := db.Query(s)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	defer rows.Close()
+	i := 0
 	for rows.Next() {
 		var t1 string
 		var t2 string
@@ -41,7 +41,8 @@ func ServicesFromSql(sortString string) {
 			fmt.Println(err)
 			return
 		}
-		fmt.Println(t1, t2)
+		fmt.Printf("%03d. %-60s %s\n", i+1, t1, t2)
+		i++
 	}
 }
 
