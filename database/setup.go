@@ -31,10 +31,10 @@ CREATE INDEX IF NOT EXISTS index1 ON services (name);
 CREATE INDEX IF NOT EXISTS index2 ON services (logged_at);
 CREATE UNIQUE INDEX IF NOT EXISTS index3 ON services (id);
 
-CREATE TABLE service_meta (service text, 
+CREATE TABLE service_meta (name text, 
                        total_exceptions integer,
                        total_bytes integer);
-CREATE UNIQUE INDEX IF NOT EXISTS index4 ON service_meta (service);
+CREATE UNIQUE INDEX IF NOT EXISTS index4 ON service_meta (name);
 	`
 	_, err := db.Exec(sqlStmt)
 	if err != nil {

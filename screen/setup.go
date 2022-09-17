@@ -3,7 +3,6 @@ package screen
 import (
 	"fmt"
 	"infinity-dog/database"
-	"infinity-dog/dog"
 	"log"
 
 	ui "github.com/gizak/termui/v3"
@@ -12,7 +11,7 @@ import (
 
 var services = widgets.NewList()
 var messages = widgets.NewList()
-var serviceItems = []dog.Service{}
+var serviceItems = []database.Service{}
 
 func Setup() {
 	if err := ui.Init(); err != nil {
@@ -24,9 +23,9 @@ func Setup() {
 	services.SelectedRowStyle.Bg = ui.ColorMagenta
 	services.TextStyle.Fg = ui.ColorWhite
 	services.TextStyle.Bg = ui.ColorBlack
-	serviceItems = dog.ServicesHitsFromSql()
+	serviceItems = database.ServicesByTotalBytes()
 	for _, item := range serviceItems {
-		services.Rows = append(services.Rows, fmt.Sprintf("% 9d %s", item.Hits, item.Name))
+		services.Rows = append(services.Rows, fmt.Sprintf("% 9d %s", item.TotalBytes, item.Name))
 	}
 	messages.SelectedRowStyle.Fg = ui.ColorWhite
 	messages.SelectedRowStyle.Bg = ui.ColorMagenta

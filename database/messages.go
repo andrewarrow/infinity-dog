@@ -11,7 +11,7 @@ type Message struct {
 
 func MessagesFromService(service string) []Message {
 	items := []Message{}
-	s := fmt.Sprintf(`select msg, message, logged_at from services where name='%s' order by logged_at desc limit 300`, service)
+	s := fmt.Sprintf(`select msg, message, logged_at from services where name='%s' order by logged_at desc limit 60`, service)
 
 	db := OpenTheDB()
 	defer db.Close()

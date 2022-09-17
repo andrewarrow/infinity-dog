@@ -7,7 +7,7 @@ type Service struct {
 	TotalBytes int64
 }
 
-func ServicesHitsFromSql() []Service {
+func ServicesByTotalBytes() []Service {
 	items := []Service{}
 	s := `select name, total_bytes from service_meta order by total_bytes desc`
 	db := OpenTheDB()

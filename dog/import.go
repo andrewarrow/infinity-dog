@@ -51,10 +51,10 @@ func Import() {
 
 	for k, v := range metaMapBytes {
 		tx, _ := db.Begin()
-		s := `insert into service_meta (service,total_exceptions,total_bytes) values (?,?,?)`
+		s := `insert into service_meta (name,total_exceptions,total_bytes) values (?,?,?)`
 		prep, _ := tx.Prepare(s)
 		prep.Exec(k, metaMapExceptions[k], v)
 		tx.Commit()
-		fmt.Println("done meta")
 	}
+	fmt.Println("done meta")
 }
