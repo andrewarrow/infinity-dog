@@ -72,6 +72,6 @@ func handleEnter() {
 	items := database.MessagesFromService(serviceName)
 	messages.Rows = []string{}
 	for _, item := range items {
-		messages.Rows = append(messages.Rows, item.Both)
+		messages.Rows = append(messages.Rows, item.BothTruncated())
 	}
 }
