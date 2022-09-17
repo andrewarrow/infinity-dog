@@ -16,6 +16,7 @@ type PageHolder struct {
 
 type AttributeHolder struct {
 	Attributes Attribute `json:"attributes"`
+	Id         string    `json:"id"`
 }
 
 type Attribute struct {

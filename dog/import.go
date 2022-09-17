@@ -27,16 +27,16 @@ func Import() {
 		json.Unmarshal([]byte(jsonString), &logResponse)
 
 		tx, _ := db.Begin()
-		s := `insert into services (name,msg,message,exception,logged_at) values (?,?,?,?,?)`
+		s := `insert into services (id,name,msg,message,exception,logged_at) values (?,?,?,?,?,?)`
 		prep, _ := tx.Prepare(s)
 
 		for _, d := range logResponse.Data {
 			ts := d.Attributes.Timestamp
-			prep.Exec(d.Attributes.Service, d.Attributes.SubAttributes.Msg,
+			prep.Exec(d.Id, d.Attributes.Service, d.Attributes.SubAttributes.Msg,
 				d.Attributes.Message, d.Attributes.SubAttributes.Exception, ts)
 		}
 
-		fmt.Println("commiting", i)
 		tx.Commit()
+		fmt.Println("done", i)
 	}
 }
