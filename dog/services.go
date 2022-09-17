@@ -13,6 +13,7 @@ var servicesHitMap = map[string]int{}
 var servicesDataMap = map[string]int{}
 var servicesExceptionMap = map[string]int{}
 var servicesExceptions = []string{}
+var servicesMessages = []string{}
 
 type Service struct {
 	Name       string
@@ -74,6 +75,9 @@ func ServicesFromSql(sortString, service string) {
 		if len(exception) > 0 {
 			servicesExceptionMap[name]++
 			servicesExceptions = append(servicesExceptions, exception)
+		}
+		if len(msg)+len(message) > 0 {
+			servicesMessages = append(servicesMessages, message+msg)
 		}
 	}
 
