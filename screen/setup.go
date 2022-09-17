@@ -16,6 +16,10 @@ func Setup() {
 	defer ui.Close()
 
 	services := widgets.NewList()
+	services.SelectedRowStyle.Fg = ui.ColorWhite
+	services.SelectedRowStyle.Bg = ui.ColorMagenta
+	services.TextStyle.Fg = ui.ColorWhite
+	services.TextStyle.Bg = ui.ColorBlack
 	items := dog.ServicesHitsFromSql()
 	for _, item := range items {
 		services.Rows = append(services.Rows, fmt.Sprintf("% 9d %s", item.Hits, item.Name))
@@ -39,12 +43,16 @@ func Setup() {
 			switch e.ID {
 			case "q", "<C-c>":
 				return
+			case "j", "<Down>":
+				services.ScrollDown()
+			case "k", "<Up>":
+				services.ScrollUp()
 			case "<Resize>":
 				payload := e.Payload.(ui.Resize)
 				grid.SetRect(0, 0, payload.Width, payload.Height)
 				ui.Clear()
-				ui.Render(grid)
 			}
 		}
+		ui.Render(grid)
 	}
 }
