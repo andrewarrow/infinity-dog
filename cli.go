@@ -10,5 +10,6 @@ func PrintHelp() {
 	fmt.Println("  infinity-dog exceptions [service]")
 	fmt.Println("  infinity-dog messages   [service]")
 	fmt.Println("  infinity-dog import")
+	fmt.Println("  infinity-dog screen")
 	fmt.Println("")
 }

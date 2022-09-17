@@ -2,6 +2,7 @@ package main
 
 import (
 	"infinity-dog/dog"
+	"infinity-dog/screen"
 	"infinity-dog/util"
 	"math/rand"
 	"os"
@@ -36,6 +37,8 @@ func main() {
 	} else if command == "messages" {
 		service := util.GetArg(2)
 		dog.Messages(service)
+	} else if command == "screen" {
+		screen.Setup()
 	} else if command == "services" {
 		sort := util.GetArg(2)
 		level := util.GetArg(3)

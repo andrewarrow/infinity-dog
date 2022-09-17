@@ -7,6 +7,7 @@ import (
 	"infinity-dog/files"
 	"io/ioutil"
 	"sort"
+	"strconv"
 )
 
 var servicesHitMap = map[string]int{}
@@ -27,29 +28,25 @@ func NewService() *Service {
 	return &s
 }
 
-func ServicesHitsFromSql(sortString string) {
+func ServicesHitsFromSql() []Service {
+	items := []Service{}
 	s := `select distinct(name) as name, count(name) as c from services group by name order by c desc`
 	db := database.OpenTheDB()
 	defer db.Close()
 
-	rows, err := db.Query(s)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	rows, _ := db.Query(s)
 	defer rows.Close()
-	i := 0
 	for rows.Next() {
-		var t1 string
-		var t2 string
-		err = rows.Scan(&t1, &t2)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		fmt.Printf("%03d. %-60s %s\n", i+1, t1, t2)
-		i++
+		var name string
+		var hits string
+		rows.Scan(&name, &hits)
+		service := Service{}
+		service.Name = name
+		service.Hits, _ = strconv.Atoi(hits)
+		items = append(items, service)
 	}
+
+	return items
 }
 
 func ServicesFromSql(sortString, service string) {
