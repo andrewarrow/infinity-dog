@@ -2,37 +2,15 @@ package dog
 
 import (
 	"fmt"
-	"sort"
-	"strings"
+	"infinity-dog/database"
+	"time"
 )
 
-type Exception struct {
-	Name string
-	Hits int
-}
-
-func Exceptions(service string) {
-	exceptionMap := map[string]int{}
-	ServicesFromSql("", service)
-
-	for _, e := range servicesExceptions {
-		tokens := strings.Split(e, "\n")
-		exceptionMap[tokens[0]]++
+func Exceptions(serviceName string) {
+	items := database.ExceptionsFromService(serviceName)
+	utcNow := time.Now().In(utc).Unix()
+	for _, item := range items {
+		delta := float64(utcNow-item.LoggedAt) / 3600.0
+		fmt.Printf("%.2f %d\n", delta, len(item.Text))
 	}
-
-	exceptionList := []Exception{}
-	for k, v := range exceptionMap {
-		e := Exception{}
-		e.Name = k
-		e.Hits = v
-		exceptionList = append(exceptionList, e)
-	}
-	sort.SliceStable(exceptionList, func(i, j int) bool {
-		return exceptionList[i].Hits > exceptionList[j].Hits
-	})
-
-	for i, exception := range exceptionList {
-		fmt.Printf("%03d. [%03d] %-60s\n", i+1, exception.Hits, exception.Name)
-	}
-
 }

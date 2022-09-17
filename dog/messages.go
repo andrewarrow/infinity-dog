@@ -13,5 +13,4 @@ func Messages(serviceName string) {
 		delta := float64(utcNow-item.LoggedAt) / 3600.0
 		fmt.Printf("%.2f %d %s\n", delta, len(item.Both), item.BothTruncated(0))
 	}
-
 }
