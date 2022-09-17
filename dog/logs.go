@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+var utc, _ = time.LoadLocation("UTC")
+
 func golangTimeToDogTime(s string) string {
 	dateString := s[0:10]
 	timeString := s[11:19]
@@ -17,7 +19,6 @@ func golangTimeToDogTime(s string) string {
 
 func Logs(hours int, query string) {
 
-	utc, _ := time.LoadLocation("UTC")
 	utcNow := time.Now().In(utc)
 	utcString := fmt.Sprintf("%v", utcNow.Add(time.Hour*time.Duration(hours*-1)))
 	from := golangTimeToDogTime(utcString)

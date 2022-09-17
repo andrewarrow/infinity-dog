@@ -2,41 +2,16 @@ package dog
 
 import (
 	"fmt"
-	"sort"
-	"strings"
+	"infinity-dog/database"
+	"time"
 )
 
-type Message struct {
-	Name string
-	Hits int
-}
-
-func Messages(service string) {
-	messagesMap := map[string]int{}
-	ServicesFromSql("", service)
-
-	for _, m := range servicesMessages {
-		bothMessages := m
-		if len(bothMessages) > 162 {
-			bothMessages = bothMessages[:162]
-		}
-		tokens := strings.Split(bothMessages, "\n")
-		messagesMap[tokens[0]]++
-	}
-
-	messagesList := []Message{}
-	for k, v := range messagesMap {
-		m := Message{}
-		m.Name = k
-		m.Hits = v
-		messagesList = append(messagesList, m)
-	}
-	sort.SliceStable(messagesList, func(i, j int) bool {
-		return messagesList[i].Hits > messagesList[j].Hits
-	})
-
-	for i, messages := range messagesList {
-		fmt.Printf("%03d. [%03d] %-60s\n", i+1, messages.Hits, messages.Name)
+func Messages(serviceName string) {
+	items := database.MessagesFromService(serviceName)
+	utcNow := time.Now().In(utc).Unix()
+	for _, item := range items {
+		delta := float64(utcNow-item.LoggedAt) / 3600.0
+		fmt.Printf("%.2f %d %s\n", delta, len(item.Both), item.BothTruncated(0))
 	}
 
 }
