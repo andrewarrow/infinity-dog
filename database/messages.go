@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"strings"
 )
 
 type Message struct {
@@ -33,8 +34,8 @@ func MessagesFromService(service string) []Message {
 }
 
 func (m *Message) BothTruncated(offset int) string {
-	if len(m.Both) > offset+90 {
-		return m.Both[offset : offset+90]
+	if len(m.Both) > 90 {
+		return strings.ReplaceAll(m.Both[0:90], "\n", " ")
 	}
-	return m.Both
+	return strings.ReplaceAll(m.Both, "\n", " ")
 }

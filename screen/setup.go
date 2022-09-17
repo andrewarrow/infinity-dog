@@ -15,6 +15,7 @@ var services = widgets.NewList()
 var messages = widgets.NewList()
 var serviceItems = []database.Service{}
 var offset = 0
+var tab = "left"
 
 func Setup() {
 	if err := ui.Init(); err != nil {
@@ -62,14 +63,28 @@ func Setup() {
 			case "q", "<C-c>":
 				return
 			case "j", "<Down>":
-				services.ScrollDown()
+				if tab == "left" {
+					services.ScrollDown()
+				} else {
+					messages.ScrollDown()
+				}
 			case "k", "<Up>":
-				services.ScrollUp()
+				if tab == "left" {
+					services.ScrollUp()
+				} else {
+					messages.ScrollUp()
+				}
+			case "<Tab>":
+				if tab == "left" {
+					tab = "right"
+				} else {
+					tab = "left"
+				}
 			case "<Left>":
-				offset--
+				//offset--
 				handleEnter()
 			case "<Right>":
-				offset++
+				//offset++
 				handleEnter()
 			case "<Enter>":
 				offset = 0
@@ -91,6 +106,6 @@ func handleEnter() {
 	utcNow := time.Now().In(utc).Unix()
 	for _, item := range items {
 		delta := float64(utcNow-item.LoggedAt) / 3600.0
-		messages.Rows = append(messages.Rows, fmt.Sprintf("%.2f %s", delta, item.BothTruncated(offset)))
+		messages.Rows = append(messages.Rows, fmt.Sprintf("%.2f %d %s", delta, len(item.Both), item.BothTruncated(offset)))
 	}
 }
