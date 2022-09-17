@@ -3,6 +3,7 @@ package dog
 import (
 	"encoding/json"
 	"fmt"
+	"infinity-dog/database"
 	"infinity-dog/files"
 	"io/ioutil"
 	"sort"
@@ -18,6 +19,30 @@ type Service struct {
 func NewService() *Service {
 	s := Service{}
 	return &s
+}
+
+func ServicesFromSql(sortString string) {
+	s := `select distinct(name) as name, count(name) as c from services group by name order by c desc`
+	db := database.OpenTheDB()
+	defer db.Close()
+
+	fmt.Println(s)
+	rows, err := db.Query(s)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var t1 string
+		var t2 string
+		err = rows.Scan(&t1, &t2)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(t1, t2)
+	}
 }
 
 func Services(sortString, level string) {
