@@ -20,6 +20,8 @@ func CreateSchema() {
 	db := OpenTheDB()
 	defer db.Close()
 
+	// explain query plan
+	// sqlite version 3.39.3
 	sqlStmt := `
 CREATE TABLE services (id text, 
                        name text, 
