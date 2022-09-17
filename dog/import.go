@@ -16,9 +16,12 @@ func Import() {
 	}
 
 	//os.Remove("sqlite.db")
-	//database.CreateSchema()
+	database.CreateSchema()
 	db := database.OpenTheDB()
 	defer db.Close()
+
+	metaMapBytes := map[string]int64{}
+	metaMapExceptions := map[string]int64{}
 
 	for i, file := range sampleFiles {
 		jsonString := files.ReadFile("samples/" + file.Name())
@@ -33,9 +36,25 @@ func Import() {
 			ts := d.Attributes.Timestamp
 			prep.Exec(d.Id, d.Attributes.Service, d.Attributes.SubAttributes.Msg,
 				d.Attributes.Message, d.Attributes.SubAttributes.Exception, ts)
+
+			metaMapBytes[d.Attributes.Service] += int64(len(d.Attributes.SubAttributes.Msg)) +
+				int64(len(d.Attributes.Message)) +
+				int64(len(d.Attributes.SubAttributes.Exception))
+			if len(d.Attributes.SubAttributes.Exception) > 0 {
+				metaMapExceptions[d.Attributes.Service]++
+			}
 		}
 
 		tx.Commit()
 		fmt.Println("done", i)
+	}
+
+	for k, v := range metaMapBytes {
+		tx, _ := db.Begin()
+		s := `insert into service_meta (service,total_exceptions,total_bytes) values (?,?,?)`
+		prep, _ := tx.Prepare(s)
+		prep.Exec(k, metaMapExceptions[k], v)
+		tx.Commit()
+		fmt.Println("done meta")
 	}
 }

@@ -21,10 +21,20 @@ func CreateSchema() {
 	defer db.Close()
 
 	sqlStmt := `
-CREATE TABLE services (id text, name text, msg text, message text, exception text, logged_at datetime);
+CREATE TABLE services (id text, 
+                       name text, 
+											 msg text, 
+											 message text, 
+											 exception text, 
+											 logged_at datetime);
 CREATE INDEX IF NOT EXISTS index1 ON services (name);
 CREATE INDEX IF NOT EXISTS index2 ON services (logged_at);
 CREATE UNIQUE INDEX IF NOT EXISTS index3 ON services (id);
+
+CREATE TABLE service_meta (service text, 
+                       total_exceptions integer,
+                       total_bytes integer);
+CREATE UNIQUE INDEX IF NOT EXISTS index4 ON service_meta (service);
 	`
 	_, err := db.Exec(sqlStmt)
 	if err != nil {
