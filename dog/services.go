@@ -12,6 +12,7 @@ import (
 var servicesHitMap = map[string]int{}
 var servicesDataMap = map[string]int{}
 var servicesExceptionMap = map[string]int{}
+var servicesExceptions = []string{}
 
 type Service struct {
 	Name       string
@@ -50,9 +51,12 @@ func ServicesHitsFromSql(sortString string) {
 	}
 }
 
-func ServicesFromSql(sortString string) {
+func ServicesFromSql(sortString, service string) {
 	//s := `select name, msg, message, exception from services order by logged_at`
 	s := `select name, msg, message, exception from services`
+	if service != "" {
+		s = fmt.Sprintf(`select name, msg, message, exception from services where name='%s'`, service)
+	}
 	db := database.OpenTheDB()
 	defer db.Close()
 
@@ -69,6 +73,7 @@ func ServicesFromSql(sortString string) {
 		servicesDataMap[name] += dataLength
 		if len(exception) > 0 {
 			servicesExceptionMap[name]++
+			servicesExceptions = append(servicesExceptions, exception)
 		}
 	}
 

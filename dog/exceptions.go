@@ -1,10 +1,7 @@
 package dog
 
 import (
-	"encoding/json"
 	"fmt"
-	"infinity-dog/files"
-	"io/ioutil"
 	"sort"
 	"strings"
 )
@@ -15,29 +12,12 @@ type Exception struct {
 }
 
 func Exceptions(service string) {
-	sampleFiles, err := ioutil.ReadDir("samples")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
 	exceptionMap := map[string]int{}
+	ServicesFromSql("", service)
 
-	for _, file := range sampleFiles {
-		jsonString := files.ReadFile("samples/" + file.Name())
-		var logResponse LogResponse
-		json.Unmarshal([]byte(jsonString), &logResponse)
-		for _, d := range logResponse.Data {
-			if d.Attributes.Service != service {
-				continue
-			}
-			if len(d.Attributes.SubAttributes.Exception) == 0 {
-				continue
-			}
-			e := d.Attributes.SubAttributes.Exception
-			tokens := strings.Split(e, "\n")
-			exceptionMap[tokens[0]]++
-		}
+	for _, e := range servicesExceptions {
+		tokens := strings.Split(e, "\n")
+		exceptionMap[tokens[0]]++
 	}
 
 	exceptionList := []Exception{}

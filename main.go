@@ -40,7 +40,7 @@ func main() {
 		sort := util.GetArg(2)
 		level := util.GetArg(3)
 		_ = level
-		dog.ServicesFromSql(sort)
+		dog.ServicesFromSql(sort, "")
 	} else if command == "help" {
 		PrintHelp()
 	}
