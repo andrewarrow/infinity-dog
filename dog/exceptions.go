@@ -12,5 +12,6 @@ func Exceptions(serviceName string) {
 	for _, item := range items {
 		delta := float64(utcNow-item.LoggedAt) / 3600.0
 		fmt.Printf("%.2f %d\n", delta, len(item.Text))
+		fmt.Println(item.Text)
 	}
 }
