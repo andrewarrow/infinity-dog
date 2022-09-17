@@ -9,6 +9,10 @@ import (
 	"sort"
 )
 
+var servicesHitMap = map[string]int{}
+var servicesDataMap = map[string]int{}
+var servicesExceptionMap = map[string]int{}
+
 type Service struct {
 	Name       string
 	Hits       int
@@ -21,7 +25,7 @@ func NewService() *Service {
 	return &s
 }
 
-func ServicesFromSql(sortString string) {
+func ServicesHitsFromSql(sortString string) {
 	s := `select distinct(name) as name, count(name) as c from services group by name order by c desc`
 	db := database.OpenTheDB()
 	defer db.Close()
@@ -46,33 +50,32 @@ func ServicesFromSql(sortString string) {
 	}
 }
 
-func Services(sortString, level string) {
-	sampleFiles, err := ioutil.ReadDir("samples")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+func ServicesFromSql(sortString string) {
+	//s := `select name, msg, message, exception from services order by logged_at`
+	s := `select name, msg, message, exception from services`
+	db := database.OpenTheDB()
+	defer db.Close()
 
-	servicesHitMap := map[string]int{}
-	servicesDataMap := map[string]int{}
-	servicesExceptionMap := map[string]int{}
-
-	for _, file := range sampleFiles {
-		jsonString := files.ReadFile("samples/" + file.Name())
-		var logResponse LogResponse
-		json.Unmarshal([]byte(jsonString), &logResponse)
-		for _, d := range logResponse.Data {
-			servicesHitMap[d.Attributes.Service]++
-			dataLength := len(d.Attributes.Message) +
-				len(d.Attributes.SubAttributes.Msg) +
-				len(d.Attributes.SubAttributes.Exception)
-			servicesDataMap[d.Attributes.Service] += dataLength
-			if len(d.Attributes.SubAttributes.Exception) > 0 {
-				servicesExceptionMap[d.Attributes.Service]++
-			}
+	rows, _ := db.Query(s)
+	defer rows.Close()
+	for rows.Next() {
+		var name string
+		var msg string
+		var message string
+		var exception string
+		rows.Scan(&name, &msg, &message, &exception)
+		servicesHitMap[name]++
+		dataLength := len(message) + len(msg) + len(exception)
+		servicesDataMap[name] += dataLength
+		if len(exception) > 0 {
+			servicesExceptionMap[name]++
 		}
 	}
 
+	handleSortAndDisplay(sortString)
+}
+
+func handleSortAndDisplay(sortString string) {
 	servicesList := []Service{}
 
 	for k, v := range servicesHitMap {
@@ -116,5 +119,35 @@ func Services(sortString, level string) {
 			fmt.Printf("%03d. %-60s %d\n", i+1, service.Name, service.Exceptions)
 		}
 	}
+}
+
+func ServicesFromJson(sortString, level string) {
+	sampleFiles, err := ioutil.ReadDir("samples")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	servicesHitMap := map[string]int{}
+	servicesDataMap := map[string]int{}
+	servicesExceptionMap := map[string]int{}
+
+	for _, file := range sampleFiles {
+		jsonString := files.ReadFile("samples/" + file.Name())
+		var logResponse LogResponse
+		json.Unmarshal([]byte(jsonString), &logResponse)
+		for _, d := range logResponse.Data {
+			servicesHitMap[d.Attributes.Service]++
+			dataLength := len(d.Attributes.Message) +
+				len(d.Attributes.SubAttributes.Msg) +
+				len(d.Attributes.SubAttributes.Exception)
+			servicesDataMap[d.Attributes.Service] += dataLength
+			if len(d.Attributes.SubAttributes.Exception) > 0 {
+				servicesExceptionMap[d.Attributes.Service]++
+			}
+		}
+	}
+
+	handleSortAndDisplay(sortString)
 
 }
