@@ -2,6 +2,7 @@ package screen
 
 import (
 	"fmt"
+	"infinity-dog/database"
 	"infinity-dog/dog"
 	"log"
 
@@ -11,6 +12,7 @@ import (
 
 var services = widgets.NewList()
 var messages = widgets.NewList()
+var serviceItems = []dog.Service{}
 
 func Setup() {
 	if err := ui.Init(); err != nil {
@@ -22,8 +24,8 @@ func Setup() {
 	services.SelectedRowStyle.Bg = ui.ColorMagenta
 	services.TextStyle.Fg = ui.ColorWhite
 	services.TextStyle.Bg = ui.ColorBlack
-	items := dog.ServicesHitsFromSql()
-	for _, item := range items {
+	serviceItems = dog.ServicesHitsFromSql()
+	for _, item := range serviceItems {
 		services.Rows = append(services.Rows, fmt.Sprintf("% 9d %s", item.Hits, item.Name))
 	}
 	messages.SelectedRowStyle.Fg = ui.ColorWhite
@@ -67,5 +69,10 @@ func Setup() {
 }
 
 func handleEnter() {
-	messages.Rows = append(messages.Rows, "hi there")
+	serviceName := serviceItems[services.SelectedRow].Name
+	items := database.MessagesFromService(serviceName)
+	messages.Rows = []string{}
+	for _, item := range items {
+		messages.Rows = append(messages.Rows, item.Both)
+	}
 }
