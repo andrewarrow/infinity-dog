@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"infinity-dog/database"
 	"log"
+	"time"
 
 	ui "github.com/gizak/termui/v3"
 	"github.com/gizak/termui/v3/widgets"
 )
 
+var utc, _ = time.LoadLocation("UTC")
 var services = widgets.NewList()
 var messages = widgets.NewList()
 var serviceItems = []database.Service{}
@@ -25,7 +27,7 @@ func Setup() {
 	services.TextStyle.Bg = ui.ColorBlack
 	serviceItems = database.ServicesByTotalBytes()
 	for _, item := range serviceItems {
-		services.Rows = append(services.Rows, fmt.Sprintf("% 9d %s", item.TotalBytes, item.Name))
+		services.Rows = append(services.Rows, fmt.Sprintf("% 11d %s", item.TotalBytes, item.Name))
 	}
 	messages.SelectedRowStyle.Fg = ui.ColorWhite
 	messages.SelectedRowStyle.Bg = ui.ColorMagenta
@@ -71,7 +73,9 @@ func handleEnter() {
 	serviceName := serviceItems[services.SelectedRow].Name
 	items := database.MessagesFromService(serviceName)
 	messages.Rows = []string{}
+	utcNow := time.Now().In(utc).Unix()
 	for _, item := range items {
-		messages.Rows = append(messages.Rows, item.BothTruncated())
+		delta := float64(utcNow-item.LoggedAt) / 3600.0
+		messages.Rows = append(messages.Rows, fmt.Sprintf("%.2f %s", delta, item.BothTruncated()))
 	}
 }
