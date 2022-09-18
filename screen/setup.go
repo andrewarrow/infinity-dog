@@ -106,6 +106,8 @@ func handleEnter() {
 	utcNow := time.Now().In(utc).Unix()
 	for _, item := range items {
 		delta := float64(utcNow-item.LoggedAt) / 3600.0
-		messages.Rows = append(messages.Rows, fmt.Sprintf("%.2f %d %s", delta, len(item.Both), item.BothTruncated(offset)))
+		messages.Rows = append(messages.Rows, fmt.Sprintf("%.2f [%04d](fg:red) [%04d](fg:cyan) %s", delta, item.ExceptionLength, len(item.Both), item.BothTruncated(offset)))
 	}
+	messages.SelectedRow = 0
+	tab = "right"
 }

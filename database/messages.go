@@ -6,13 +6,14 @@ import (
 )
 
 type Message struct {
-	Both     string
-	LoggedAt int64
+	Both            string
+	ExceptionLength int
+	LoggedAt        int64
 }
 
 func MessagesFromService(service string) []Message {
 	items := []Message{}
-	s := fmt.Sprintf(`select msg, message, unixepoch(logged_at) as ts from services where name='%s' order by logged_at desc limit 60`, service)
+	s := fmt.Sprintf(`select msg, message, length(exception) as exception_length, unixepoch(logged_at) as ts from services where name='%s' order by logged_at desc limit 300`, service)
 
 	db := OpenTheDB()
 	defer db.Close()
@@ -22,10 +23,12 @@ func MessagesFromService(service string) []Message {
 	for rows.Next() {
 		var msg string
 		var messageString string
+		var exceptionLength int
 		var loggedAt int64
-		rows.Scan(&msg, &messageString, &loggedAt)
+		rows.Scan(&msg, &messageString, &exceptionLength, &loggedAt)
 		message := Message{}
 		message.Both = msg + messageString
+		message.ExceptionLength = exceptionLength
 		message.LoggedAt = loggedAt
 		items = append(items, message)
 	}
