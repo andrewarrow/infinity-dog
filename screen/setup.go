@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"infinity-dog/database"
 	"log"
+	"os"
 	"time"
 
 	ui "github.com/gizak/termui/v3"
@@ -16,6 +17,7 @@ var messages = widgets.NewList()
 var serviceItems = []database.Service{}
 var offset = 0
 var tab = "left"
+var shutdown = false
 
 func Setup() {
 	if err := ui.Init(); err != nil {
@@ -47,16 +49,19 @@ func Setup() {
 
 	grid.Set(
 		ui.NewRow(1.0,
-			ui.NewCol(1.0/3,
+			ui.NewCol(0.40,
 				ui.NewRow(0.8, services),
 				ui.NewRow(0.2, p2)),
-			ui.NewCol((1.0/3)*2, messages),
+			ui.NewCol(0.59, messages),
 		),
 	)
 
 	ui.Render(grid)
 	uiEvents := ui.PollEvents()
 	for {
+		if shutdown {
+			break
+		}
 		select {
 		case e := <-uiEvents:
 			switch e.ID {
@@ -100,14 +105,25 @@ func Setup() {
 }
 
 func handleEnter() {
-	serviceName := serviceItems[services.SelectedRow].Name
-	items := database.MessagesFromService(serviceName)
-	messages.Rows = []string{}
-	utcNow := time.Now().In(utc).Unix()
-	for _, item := range items {
-		delta := float64(utcNow-item.LoggedAt) / 3600.0
-		messages.Rows = append(messages.Rows, fmt.Sprintf("%.2f [%04d](fg:red) [%04d](fg:cyan) %s", delta, item.ExceptionLength, len(item.Both), item.BothTruncated(offset)))
+	if tab == "left" {
+		serviceName := serviceItems[services.SelectedRow].Name
+		items := database.MessagesFromService(serviceName)
+		messages.Rows = []string{}
+		utcNow := time.Now().In(utc).Unix()
+		for _, item := range items {
+			delta := float64(utcNow-item.LoggedAt) / 3600.0
+			messages.Rows = append(messages.Rows, fmt.Sprintf("%.2f [%04d](fg:red) [%04d](fg:cyan) %s", delta, item.ExceptionLength, len(item.Both), item.BothTruncated(offset)))
+		}
+		messages.SelectedRow = 0
+	} else if tab == "right" {
+
+		serviceName := serviceItems[services.SelectedRow].Name
+		items := database.MessagesFromService(serviceName)
+		m := items[messages.SelectedRow]
+		ui.Close()
+		shutdown = true
+		fmt.Println(m.Both)
+		os.Exit(1)
+		//fmt.Println(m.Exception)
 	}
-	messages.SelectedRow = 0
-	tab = "right"
 }
