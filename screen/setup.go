@@ -125,7 +125,7 @@ func handleEnter() {
 		e := database.ExceptionById(m.Id)
 		fmt.Println(e.Text)
 
+		fmt.Println(m.Id)
 		os.Exit(1)
-		//fmt.Println(m.Exception)
 	}
 }
