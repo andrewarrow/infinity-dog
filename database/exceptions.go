@@ -30,3 +30,22 @@ func ExceptionsFromService(service string) []Exception {
 
 	return items
 }
+
+func ExceptionById(id string) Exception {
+	s := fmt.Sprintf(`select exception from services where id='%s'`, id)
+
+	db := OpenTheDB()
+	defer db.Close()
+
+	rows, _ := db.Query(s)
+	defer rows.Close()
+	rows.Next()
+
+	var exceptionString string
+	rows.Scan(&exceptionString)
+
+	e := Exception{}
+	e.Text = exceptionString
+
+	return e
+}

@@ -123,6 +123,9 @@ func handleEnter() {
 		ui.Close()
 		shutdown = true
 		fmt.Println(m.Both)
+		e := database.ExceptionById(m.Id)
+		fmt.Println(e.Text)
+
 		os.Exit(1)
 		//fmt.Println(m.Exception)
 	}
