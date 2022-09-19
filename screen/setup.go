@@ -87,11 +87,9 @@ func Setup() {
 					tab = "left"
 				}
 			case "<Left>":
-				//offset--
-				handleEnter()
+				tab = "left"
 			case "<Right>":
-				//offset++
-				handleEnter()
+				tab = "right"
 			case "<Enter>":
 				offset = 0
 				handleEnter()

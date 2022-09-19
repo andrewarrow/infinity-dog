@@ -20,6 +20,8 @@ func golangTimeToDogTime(s string) string {
 func Logs(hours int, query string) {
 
 	utcNow := time.Now().In(utc)
+	// we seem to be off by about 1 hour
+	utcNow = utcNow.Add(time.Minute * 55)
 	utcString := fmt.Sprintf("%v", utcNow.Add(time.Hour*time.Duration(hours*-1)))
 	from := golangTimeToDogTime(utcString)
 	utcString = fmt.Sprintf("%v", utcNow.Add(time.Second))

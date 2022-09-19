@@ -6,6 +6,7 @@ import (
 	"infinity-dog/database"
 	"infinity-dog/files"
 	"io/ioutil"
+	"os"
 )
 
 func Import() {
@@ -47,6 +48,7 @@ func Import() {
 
 		tx.Commit()
 		fmt.Println("done", i)
+		os.Remove("samples/" + file.Name())
 	}
 
 	for k, v := range metaMapBytes {
