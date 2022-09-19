@@ -38,8 +38,9 @@ func Setup() {
 	messages.TextStyle.Fg = ui.ColorWhite
 	messages.TextStyle.Bg = ui.ColorBlack
 
+	min, max := database.MinMaxDates()
 	p2 := widgets.NewParagraph()
-	p2.Text = fmt.Sprintf("[There](fg:blue,mod:bold) are [%d](fg:red) rows in sqlite. [From](fg:green) 12 days ago to 3 hours ago.", database.TotalRows())
+	p2.Text = fmt.Sprintf("[There](fg:blue,mod:bold) are [%d](fg:red) rows in sqlite. [From](fg:green) %.2f days ago to %.2f.", database.TotalRows(), min, max)
 	//p2.SetRect(0, 5, 35, 10)
 	p2.BorderStyle.Fg = ui.ColorYellow
 
