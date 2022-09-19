@@ -39,7 +39,7 @@ func Setup() {
 	messages.TextStyle.Bg = ui.ColorBlack
 
 	p2 := widgets.NewParagraph()
-	p2.Text = "[There](fg:blue,mod:bold) are [1,345,192](fg:red) rows in sqlite. [From](fg:green) 12 days ago to 3 hours ago."
+	p2.Text = fmt.Sprintf("[There](fg:blue,mod:bold) are [%d](fg:red) rows in sqlite. [From](fg:green) 12 days ago to 3 hours ago.", database.TotalRows())
 	//p2.SetRect(0, 5, 35, 10)
 	p2.BorderStyle.Fg = ui.ColorYellow
 
