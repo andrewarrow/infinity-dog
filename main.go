@@ -23,7 +23,7 @@ func main() {
 		query := os.Args[2]
 		dog.Logs(24, query)
 	} else if command == "key" {
-		dog.CheckKey()
+		dog.CreateKey()
 	} else if command == "billing" {
 		dog.Billing()
 	} else if command == "import" {
