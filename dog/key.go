@@ -15,8 +15,8 @@ func CreateApplicationKey() {
   "data": {
     "type": "application_keys",
     "attributes": {
-      "name": "aa_usage_read6",
-			"scopes": ["usage_read"]
+      "name": "aa_usage_read7",
+			"scopes": ["usage_read", "timeseries_query","events_read","incident_read"]
     }
   }
 }`
