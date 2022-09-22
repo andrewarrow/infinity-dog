@@ -52,6 +52,8 @@ func main() {
 		dog.ActiveHosts()
 	} else if command == "processes" {
 		dog.Processes()
+	} else if command == "metrics" {
+		dog.Metrics()
 	} else if command == "help" {
 		PrintHelp()
 	}
@@ -60,5 +62,4 @@ func main() {
 	// https://api.datadoghq.com/api/v1/slo
 	// https://docs.datadoghq.com/api/latest/service-level-objectives/#get-all-slos
 
-	// https://docs.datadoghq.com/api/latest/metrics/
 }
