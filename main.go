@@ -48,6 +48,10 @@ func main() {
 		dog.ServicesFromSql(sort, "")
 	} else if command == "sd" {
 		dog.ServiceDependencies()
+	} else if command == "hosts" {
+		dog.ActiveHosts()
+	} else if command == "processes" {
+		dog.Processes()
 	} else if command == "help" {
 		PrintHelp()
 	}
@@ -55,10 +59,6 @@ func main() {
 	//TODO
 	// https://api.datadoghq.com/api/v1/slo
 	// https://docs.datadoghq.com/api/latest/service-level-objectives/#get-all-slos
-
-	// https://docs.datadoghq.com/api/latest/hosts/#get-the-total-number-of-active-hosts
-
-	// https://docs.datadoghq.com/api/latest/processes/#get-all-processes
 
 	// https://docs.datadoghq.com/api/latest/metrics/
 }
