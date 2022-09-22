@@ -10,16 +10,30 @@ func CheckKey() {
 	fmt.Println(jsonString)
 }
 
-func CreateKey() {
+func CreateApplicationKey() {
 	input := `{
   "data": {
     "type": "application_keys",
     "attributes": {
-      "name": "aa_usage_read5",
+      "name": "aa_usage_read6",
 			"scopes": ["usage_read"]
     }
   }
 }`
 	jsonString := network.DoPost("/api/v2/current_user/application_keys", []byte(input))
+	fmt.Println(jsonString)
+}
+
+func CreateApiKey() {
+	input := `{
+  "data": {
+    "type": "api_keys",
+    "attributes": {
+      "name": "aa_usage_read",
+			"scopes": ["usage_read"]
+    }
+  }
+}`
+	jsonString := network.DoPost("/api/v2/api_keys", []byte(input))
 	fmt.Println(jsonString)
 }
