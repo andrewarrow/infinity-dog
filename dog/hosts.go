@@ -6,6 +6,6 @@ import (
 )
 
 func ActiveHosts() {
-	jsonString := network.DoGet("/api/v1/hosts/totals")
+	jsonString := network.DoGet("/api/v1/hosts")
 	fmt.Println(jsonString)
 }
