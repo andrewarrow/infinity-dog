@@ -19,8 +19,8 @@ func DoGet(route string) string {
 	urlString := fmt.Sprintf("%s%s", BaseUrl(), route)
 	request, _ := http.NewRequest("GET", urlString, nil)
 	request.Header.Set("User-Agent", agent)
-	request.Header.Set("DD-API-KEY", os.Getenv("DOG_KEY"))
-	request.Header.Set("DD-APPLICATION-KEY", os.Getenv("DOG_APP"))
+	request.Header.Set("DD-API-KEY", os.Getenv("DOG_API_KEY"))
+	request.Header.Set("DD-APPLICATION-KEY", os.Getenv("DOG_APP_KEY"))
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Accept", "application/json")
 	client := &http.Client{Timeout: time.Second * 5}
@@ -55,8 +55,8 @@ func DoPost(route string, payload []byte) string {
 	body := bytes.NewBuffer(payload)
 	urlString := fmt.Sprintf("%s%s", BaseUrl(), route)
 	request, _ := http.NewRequest("POST", urlString, body)
-	request.Header.Set("DD-API-KEY", os.Getenv("DOG_KEY"))
-	request.Header.Set("DD-APPLICATION-KEY", os.Getenv("DOG_APP"))
+	request.Header.Set("DD-API-KEY", os.Getenv("DOG_API_KEY"))
+	request.Header.Set("DD-APPLICATION-KEY", os.Getenv("DOG_APP_KEY"))
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Accept", "application/json")
 	client := &http.Client{Timeout: time.Second * 50}
