@@ -81,8 +81,8 @@ func makePayload(query, from, to, cursor string) string {
     "indexes": [
       "main"
     ],
-		"from": "%s+01:00",
-    "to": "%s+01:00"
+		"from": "%s+00:00",
+    "to": "%s+00:00"
   },
   "sort": "timestamp",
   "page": {
