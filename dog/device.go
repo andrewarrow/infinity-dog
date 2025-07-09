@@ -75,38 +75,15 @@ func Device(deviceId string) {
 }
 
 func DeviceLogsMinutes(minutes int, query string) {
-	utc, _ := time.LoadLocation("UTC")
-	utcNow := time.Now().In(utc)
-	// we seem to be off by about 1 hour
-	utcNow = utcNow.Add(time.Minute * 55)
-
-	// Go back exactly the specified number of minutes
-	utcString := fmt.Sprintf("%v", utcNow.Add(time.Minute*time.Duration(minutes*-1)))
-	from := golangTimeToDogTime(utcString)
-	utcString = fmt.Sprintf("%v", utcNow.Add(time.Second))
-	to := golangTimeToDogTime(utcString)
+	now := time.Now().UTC()
+	from := golangTimeToDogTime(now.Add(-time.Duration(minutes) * time.Minute).String())
+	to := golangTimeToDogTime(now.String())
 
 	cursor := ""
-	startTime := time.Now().Unix()
-	hits := 0
 	for {
 		fmt.Println(from, to, cursor)
 		payloadString := makePayload(query, from, to, cursor)
-		// 300 requests per hour (aka 5 per minute)
 		jsonString := network.DoPost("/api/v2/logs/events/search", []byte(payloadString))
-		hits++
-		if hits == 300 {
-			for {
-				delta := time.Now().Unix() - startTime
-				if delta > 3600 {
-					break
-				}
-				fmt.Println("at 300", delta)
-				time.Sleep(time.Second * 1)
-			}
-			startTime = time.Now().Unix()
-			hits = 0
-		}
 
 		var logResponse LogResponse
 		json.Unmarshal([]byte(jsonString), &logResponse)
