@@ -54,6 +54,9 @@ func main() {
 		dog.Processes()
 	} else if command == "metrics" {
 		dog.Metrics()
+	} else if command == "device" {
+		deviceId := util.GetArg(2)
+		dog.Device(deviceId)
 	} else if command == "help" {
 		PrintHelp()
 	}

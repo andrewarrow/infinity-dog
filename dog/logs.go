@@ -33,6 +33,7 @@ func Logs(hours int, query string) {
 	for {
 		fmt.Println(from, to, cursor)
 		payloadString := makePayload(query, from, to, cursor)
+		fmt.Println(payloadString)
 		// 300 requests per hour (aka 5 per minute)
 		jsonString := network.DoPost("/api/v2/logs/events/search", []byte(payloadString))
 		hits++
