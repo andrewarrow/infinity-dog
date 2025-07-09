@@ -18,19 +18,19 @@ func decodeHexPayload(hexStr string) string {
 	if hexStr == "" {
 		return ""
 	}
-	
+
 	decoded, err := hex.DecodeString(hexStr)
 	if err != nil {
 		return hexStr // Return original if decode fails
 	}
-	
+
 	// Check if all bytes are printable ASCII
 	for _, b := range decoded {
 		if !unicode.IsPrint(rune(b)) && b != '\n' && b != '\r' && b != '\t' {
 			return hexStr // Return hex if binary data found
 		}
 	}
-	
+
 	return string(decoded)
 }
 
@@ -39,17 +39,17 @@ func convertUTCToPT(utcTimeStr string) string {
 	if utcTimeStr == "" {
 		return ""
 	}
-	
+
 	// Parse the UTC time string
 	utcTime, err := time.Parse(time.RFC3339, utcTimeStr)
 	if err != nil {
 		return utcTimeStr // Return original if parse fails
 	}
-	
+
 	// Convert to PT
-	pt, _ := time.LoadLocation("America/Los_Angeles")
+	pt, _ := time.LoadLocation("America/Denver")
 	ptTime := utcTime.In(pt)
-	
+
 	return ptTime.Format("Jan 2, 2006 3:04:05 PM MST")
 }
 
@@ -60,13 +60,13 @@ func Device(deviceId string) {
 	}
 
 	// Calculate last 10 minutes in PT
-	pt, _ := time.LoadLocation("America/Los_Angeles")
+	pt, _ := time.LoadLocation("America/Denver")
 	ptNow := time.Now().In(pt)
 	ptFrom := ptNow.Add(-10 * time.Minute)
-	
+
 	// Display time range in PT format
-	fmt.Printf("Time range: %s – %s PT\n", 
-		ptFrom.Format("Jan 2, 3:04 pm"), 
+	fmt.Printf("Time range: %s – %s PT\n",
+		ptFrom.Format("Jan 2, 3:04 pm"),
 		ptNow.Format("Jan 2, 3:04 pm"))
 
 	// Then call Logs with the device-specific query for last 10 minutes
@@ -116,7 +116,7 @@ func DeviceLogsMinutes(minutes int, query string) {
 			if d.Attributes.SubAttributes.PayloadHex != "" {
 				decodedPayload := decodeHexPayload(d.Attributes.SubAttributes.PayloadHex)
 				ptTime := convertUTCToPT(d.Attributes.SubAttributes.Time)
-				
+
 				// Try to format as JSON if it's valid JSON
 				var jsonObj interface{}
 				if err := json.Unmarshal([]byte(decodedPayload), &jsonObj); err == nil {
@@ -129,7 +129,7 @@ func DeviceLogsMinutes(minutes int, query string) {
 				} else {
 					fmt.Printf("payload: %s\n", decodedPayload)
 				}
-				
+
 				fmt.Printf("topic: %s\n", d.Attributes.SubAttributes.Topic)
 				fmt.Printf("time: %s\n", ptTime)
 				fmt.Println("---")
