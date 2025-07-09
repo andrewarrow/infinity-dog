@@ -30,6 +30,9 @@ type Attribute struct {
 }
 
 type SubAttribute struct {
-	Msg       string `json:"msg"`
-	Exception string `json:"exception"`
+	Msg        string `json:"msg"`
+	Exception  string `json:"exception"`
+	PayloadHex string `json:"payload_hex"`
+	Topic      string `json:"topic"`
+	Time       string `json:"time"`
 }
