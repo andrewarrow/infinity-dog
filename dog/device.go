@@ -17,6 +17,16 @@ func Device(deviceId string) {
 		hoursAsInt = 24
 	}
 
+	// Calculate last 10 minutes in PT
+	pt, _ := time.LoadLocation("America/Los_Angeles")
+	ptNow := time.Now().In(pt)
+	ptFrom := ptNow.Add(-10 * time.Minute)
+	
+	// Display time range in PT format
+	fmt.Printf("Time range: %s – %s PT\n", 
+		ptFrom.Format("Jan 2, 3:04 pm"), 
+		ptNow.Format("Jan 2, 3:04 pm"))
+
 	// Then call Logs with the device-specific query for last 10 minutes
 	query := fmt.Sprintf("service:aroma-broker @device_id:%s", deviceId)
 	DeviceLogsMinutes(10, query)
