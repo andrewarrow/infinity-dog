@@ -1,6 +1,7 @@
 package dog
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"infinity-dog/files"
@@ -9,7 +10,48 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"unicode"
 )
+
+// decodeHexPayload decodes hex string to ASCII text if it's printable, otherwise returns hex
+func decodeHexPayload(hexStr string) string {
+	if hexStr == "" {
+		return ""
+	}
+	
+	decoded, err := hex.DecodeString(hexStr)
+	if err != nil {
+		return hexStr // Return original if decode fails
+	}
+	
+	// Check if all bytes are printable ASCII
+	for _, b := range decoded {
+		if !unicode.IsPrint(rune(b)) && b != '\n' && b != '\r' && b != '\t' {
+			return hexStr // Return hex if binary data found
+		}
+	}
+	
+	return string(decoded)
+}
+
+// convertUTCToPT converts UTC time string to PT format
+func convertUTCToPT(utcTimeStr string) string {
+	if utcTimeStr == "" {
+		return ""
+	}
+	
+	// Parse the UTC time string
+	utcTime, err := time.Parse(time.RFC3339, utcTimeStr)
+	if err != nil {
+		return utcTimeStr // Return original if parse fails
+	}
+	
+	// Convert to PT
+	pt, _ := time.LoadLocation("America/Los_Angeles")
+	ptTime := utcTime.In(pt)
+	
+	return ptTime.Format("Jan 2, 2006 3:04:05 PM MST")
+}
 
 func Device(deviceId string) {
 	hoursAsInt, _ := strconv.Atoi(os.Getenv("DOG_BASE"))
@@ -72,9 +114,12 @@ func DeviceLogsMinutes(minutes int, query string) {
 		// Display filtered results for device command
 		for _, d := range logResponse.Data {
 			if d.Attributes.SubAttributes.PayloadHex != "" {
-				fmt.Printf("payload_hex: %s\n", d.Attributes.SubAttributes.PayloadHex)
+				decodedPayload := decodeHexPayload(d.Attributes.SubAttributes.PayloadHex)
+				ptTime := convertUTCToPT(d.Attributes.SubAttributes.Time)
+				
+				fmt.Printf("payload: %s\n", decodedPayload)
 				fmt.Printf("topic: %s\n", d.Attributes.SubAttributes.Topic)
-				fmt.Printf("time: %s\n", d.Attributes.SubAttributes.Time)
+				fmt.Printf("time: %s\n", ptTime)
 				fmt.Println("---")
 			}
 		}
