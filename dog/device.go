@@ -117,7 +117,19 @@ func DeviceLogsMinutes(minutes int, query string) {
 				decodedPayload := decodeHexPayload(d.Attributes.SubAttributes.PayloadHex)
 				ptTime := convertUTCToPT(d.Attributes.SubAttributes.Time)
 				
-				fmt.Printf("payload: %s\n", decodedPayload)
+				// Try to format as JSON if it's valid JSON
+				var jsonObj interface{}
+				if err := json.Unmarshal([]byte(decodedPayload), &jsonObj); err == nil {
+					prettyJSON, err := json.MarshalIndent(jsonObj, "", "  ")
+					if err == nil {
+						fmt.Printf("payload: %s\n", string(prettyJSON))
+					} else {
+						fmt.Printf("payload: %s\n", decodedPayload)
+					}
+				} else {
+					fmt.Printf("payload: %s\n", decodedPayload)
+				}
+				
 				fmt.Printf("topic: %s\n", d.Attributes.SubAttributes.Topic)
 				fmt.Printf("time: %s\n", ptTime)
 				fmt.Println("---")
